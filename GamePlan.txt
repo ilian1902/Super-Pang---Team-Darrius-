@@ -1,0 +1,20 @@
+Player
+	-Position - X
+	-Symbol
+	-Color
+	-Lives
+	
+Baloon
+	-Position - X and Y
+	-Symbol
+	-Color
+	
+Shots
+	-Position - X and Y
+	-Symbol
+	-Color
+	
+Collisions
+	-Baloon vs Player
+	-Baloon vs Shots
+	-Score
