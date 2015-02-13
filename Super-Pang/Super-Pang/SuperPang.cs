@@ -57,7 +57,14 @@ namespace SuperPang
 
         private static void MoveAllBalloons()
         {
-            throw new NotImplementedException();
+            foreach (var balloon in balloons)
+            {
+                if (balloon.CurrentX >= Console.BufferWidth) balloon.CurrentX--;
+                else balloon.CurrentX++;
+
+                if (balloon.CurrentY >= Console.BufferHeight) balloon.CurrentY--;
+                else balloon.CurrentY++;
+            }
         }
 
         private static void MovePlayer()

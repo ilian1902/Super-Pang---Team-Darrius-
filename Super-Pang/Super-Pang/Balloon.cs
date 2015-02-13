@@ -15,8 +15,13 @@
 
         public int Radius { get; set; }
 
+        public int CurrentX { get; set; }
+
+        public int CurrentY { get; set; }
+
         private void DrawBallInArray()
         {
+            // TODO: Implement logic
             this.balloon[0, 1] = '*';
             this.balloon[0, 2] = '*';
             this.balloon[1, 0] = '*';
@@ -27,9 +32,9 @@
             this.balloon[3, 2] = '*';
         }
 
-        public void Draw(int x, int y)
+        public void Draw()
         {
-            Console.SetCursorPosition(x, y);
+            Console.SetCursorPosition(this.CurrentX, this.CurrentY);
             for (int i = 0; i < this.balloon.GetLength(0); i++)
             {
                 for (int j = 0; j < this.balloon.GetLength(1); j++)
