@@ -96,11 +96,6 @@ namespace SuperPang
                         balloon.IsGoingRight = true;
                     }
                 }
-                //if (balloon.CurrentX + (balloon.Radius * 2) + 1 >= Console.BufferHeight) balloon.CurrentX--;
-                //else balloon.CurrentX++;
-
-                //if (balloon.CurrentY >= Console.BufferWidth) balloon.CurrentY--;
-                //else balloon.CurrentY++;
             }
         }
 

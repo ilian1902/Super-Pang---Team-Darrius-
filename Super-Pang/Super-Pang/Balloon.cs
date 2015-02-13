@@ -28,14 +28,22 @@
         private void DrawBallInArray()
         {
             // TODO: Implement logic
+            this.balloon[0, 0] = ' ';
             this.balloon[0, 1] = '*';
             this.balloon[0, 2] = '*';
+            this.balloon[0, 3] = ' ';
             this.balloon[1, 0] = '*';
+            this.balloon[1, 1] = ' ';
+            this.balloon[1, 2] = ' ';
             this.balloon[1, 3] = '*';
             this.balloon[2, 0] = '*';
+            this.balloon[2, 1] = ' ';
+            this.balloon[2, 2] = ' ';
             this.balloon[2, 3] = '*';
+            this.balloon[3, 0] = ' ';
             this.balloon[3, 1] = '*';
             this.balloon[3, 2] = '*';
+            this.balloon[3, 3] = ' ';
         }
 
         public void Draw()
