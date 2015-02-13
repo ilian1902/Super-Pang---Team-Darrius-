@@ -9,10 +9,11 @@ namespace SuperPang
 {
     class Program
     {
-        static int playerPosition = 0;
-        static List<List<int>> baloon = new List<List<int>>();
-        static List<List<int>> shots = new List<List<int>>();
+        public const int FirstBallonRadius = 2;
 
+        static List<Balloon> balloons = new List<Balloon>();
+
+        static int playerPosition = 0;
         static string playerHead = "(..)";
         static string playerTorso = "<][>";
         static string playerLegs = " /\\";
@@ -27,7 +28,7 @@ namespace SuperPang
             {
                 while (true)
                 {
-                    PlaySound();
+                    Music.PlaySound();
                 }
             });
 
@@ -40,47 +41,60 @@ namespace SuperPang
 
             int livesCount = 2;
 
+            var firstBalloon = new Balloon(FirstBallonRadius);
+            balloons.Add(firstBalloon);
+
             while (livesCount > 0)
             {
                 Draw();
+                MovePlayer();
+                MoveAllBalloons();
 
-                //Moving the player
-                if (Console.KeyAvailable)
+                Thread.Sleep(200);
+                Console.Clear();
+            }
+        }
+
+        private static void MoveAllBalloons()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void MovePlayer()
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+                while (Console.KeyAvailable)
                 {
-                    ConsoleKeyInfo pressedKey = Console.ReadKey(true);
-                    while (Console.KeyAvailable)
-                    {
-                        Console.ReadKey(true);
-                    }
+                    Console.ReadKey(true);
+                }
 
-                    if (pressedKey.Key == ConsoleKey.LeftArrow)
+                if (pressedKey.Key == ConsoleKey.LeftArrow)
+                {
+                    if (playerPosition - 1 > 0)
                     {
-                        if (playerPosition - 1 > 0)
-                        {
-                            playerPosition--;
-                        }
-                    }
-
-                    if (pressedKey.Key == ConsoleKey.RightArrow)
-                    {
-                        if (playerPosition + 1 < Console.WindowWidth - 4)
-                        {
-                            playerPosition++;
-                        }
+                        playerPosition--;
                     }
                 }
 
-                Thread.Sleep(200);
-
-                Console.Clear();
+                if (pressedKey.Key == ConsoleKey.RightArrow)
+                {
+                    if (playerPosition + 1 < Console.WindowWidth - 4)
+                    {
+                        playerPosition++;
+                    }
+                }
             }
         }
 
         private static void Draw()
         {
             DrawPlayer();
-            DrawBaloon();
-            DrawShots();
+            foreach (var balloon in balloons)
+            {
+                //balloon.Draw();
+            }
         }
 
         private static void DrawPlayer()
@@ -113,201 +127,7 @@ namespace SuperPang
                 Console.WriteLine(playerLegsTogether);
             }
 
-
             Console.ForegroundColor = playerColor;
-        }
-
-        private static void DrawBaloon()
-        {
-            
-        }
-
-        private static void DrawShots()
-        {
-            
-        }
-
-        static void PlaySound()
-        {
-            //Mario theme song
-            Console.Beep(659, 125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(523, 125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(784, 125);
-            Thread.Sleep(375);
-            Console.Beep(392, 125);
-            Thread.Sleep(375);
-            Console.Beep(523, 125);
-            Thread.Sleep(250);
-            Console.Beep(392, 125);
-            Thread.Sleep(250);
-            Console.Beep(330, 125);
-            Thread.Sleep(250);
-            Console.Beep(440, 125);
-            Thread.Sleep(125);
-            Console.Beep(494, 125);
-            Thread.Sleep(125);
-            Console.Beep(466, 125);
-            Thread.Sleep(42);
-            Console.Beep(440, 125);
-            Thread.Sleep(125);
-            Console.Beep(392, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(784, 125);
-            Thread.Sleep(125);
-            Console.Beep(880, 125);
-            Thread.Sleep(125);
-            Console.Beep(698, 125);
-            Console.Beep(784, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(587, 125);
-            Console.Beep(494, 125);
-            Thread.Sleep(125);
-            Console.Beep(523, 125);
-            Thread.Sleep(250);
-            Console.Beep(392, 125);
-            Thread.Sleep(250);
-            Console.Beep(330, 125);
-            Thread.Sleep(250);
-            Console.Beep(440, 125);
-            Thread.Sleep(125);
-            Console.Beep(494, 125);
-            Thread.Sleep(125);
-            Console.Beep(466, 125);
-            Thread.Sleep(42);
-            Console.Beep(440, 125);
-            Thread.Sleep(125);
-            Console.Beep(392, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(784, 125);
-            Thread.Sleep(125);
-            Console.Beep(880, 125);
-            Thread.Sleep(125);
-            Console.Beep(698, 125);
-            Console.Beep(784, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(587, 125);
-            Console.Beep(494, 125);
-            Thread.Sleep(375);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(415, 125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(698, 125);
-            Thread.Sleep(125);
-            Console.Beep(698, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(625);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(415, 125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(622, 125);
-            Thread.Sleep(250);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(523, 125);
-            Thread.Sleep(1125);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(415, 125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(698, 125);
-            Thread.Sleep(125);
-            Console.Beep(698, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(625);
-            Console.Beep(784, 125);
-            Console.Beep(740, 125);
-            Console.Beep(698, 125);
-            Thread.Sleep(42);
-            Console.Beep(622, 125);
-            Thread.Sleep(125);
-            Console.Beep(659, 125);
-            Thread.Sleep(167);
-            Console.Beep(415, 125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Thread.Sleep(125);
-            Console.Beep(440, 125);
-            Console.Beep(523, 125);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(622, 125);
-            Thread.Sleep(250);
-            Console.Beep(587, 125);
-            Thread.Sleep(250);
-            Console.Beep(523, 125);
-            Thread.Sleep(625);
         }
     }
 }
