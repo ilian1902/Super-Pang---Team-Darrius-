@@ -1,6 +1,10 @@
 Player
 	-Position - X
 	-Symbol
+	 (..)
+	 <][>
+	  /\
+	
 	-Color
 	-Lives
 	

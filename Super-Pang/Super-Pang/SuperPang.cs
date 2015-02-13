@@ -16,6 +16,7 @@ namespace SuperPang
         static string playerHead = "(..)";
         static string playerTorso = "<][>";
         static string playerLegs = " /\\";
+        static string playerLegsTogether = " ||";
         //static string printBaloon = " ### \n#####\n ###";
         //static string shotSymbol = "^\n|";
 
@@ -101,8 +102,16 @@ namespace SuperPang
             Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
             Console.WriteLine(playerTorso);
 
-            Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
-            Console.WriteLine(playerLegs);
+            if (playerPosition % 2 == 0)
+            {
+                Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
+                Console.WriteLine(playerLegs);
+            }
+            else
+            {
+                Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
+                Console.WriteLine(playerLegsTogether);
+            }
 
 
             Console.ForegroundColor = playerColor;
