@@ -23,13 +23,13 @@ namespace SuperPang
         static void Main()
         {
             //Music run
-            //Task.Run(() =>
-            //{
-            //    while (true)
-            //    {
-            //        Music.PlaySound();
-            //    }
-            //});
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Music.PlaySound();
+                }
+            });
 
             //Console title and boundaries
             Console.Title = "Super Pang";
@@ -172,8 +172,6 @@ namespace SuperPang
         {
             foreach (var balloon in balloons)
             {
-                // balloon.CurrentY + (balloon.Radius * 2) + 1 >= 18
-                //balloon.CurrentX == playerCoordinates[0] &&
                 if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= playerCoordinates[0]) && balloon.CurrentX <= playerCoordinates[0] + 4)
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
