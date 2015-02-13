@@ -7,22 +7,22 @@ namespace SuperPang
 {
     class Program
     {
+        public static string playerHead = "(..)";
+        public static string playerTorso = "<][>";
+        public static string playerLegs = " /\\";
+        public static string playerLegsTogether = " ||";
+        public const ConsoleColor playerColor = ConsoleColor.Green;
+        
         public const int FirstBallonRadius = 2;
+        public static List<Balloon> balloons = new List<Balloon>();
 
-        static List<Balloon> balloons = new List<Balloon>();
-        static List<int> playerCoordinates;
-
-        static int playerPosition = 0;
-        static string playerHead = "(..)";
-        static string playerTorso = "<][>";
-        static string playerLegs = " /\\";
-        static string playerLegsTogether = " ||";
-        //static string printBaloon = " ### \n#####\n ###";
+        public static int playerPositionX;
+        public static int playerPositionY;
+        public static int lives;
         //static string shotSymbol = "^\n|";
 
-        static void Main()
+        public static void Main()
         {
-            //Music run
             Task.Run(() =>
             {
                 while (true)
@@ -31,35 +31,39 @@ namespace SuperPang
                 }
             });
 
-            //Console title and boundaries
             Console.Title = "Super Pang";
             Console.BufferHeight = Console.WindowHeight = 20;
             Console.BufferWidth = Console.WindowWidth = 60;
 
-            playerPosition = Console.BufferWidth / 2;
+            playerPositionX = Console.BufferWidth / 2;
+            playerPositionY = Console.BufferHeight - 3;
 
-            int livesCount = 2;
-
+            lives = 2;
             var firstBalloon = new Balloon(FirstBallonRadius);
             balloons.Add(firstBalloon);
 
-            while (livesCount > 0)
+            Draw();
+            Task.Run(() =>
             {
-                Draw();
-                DetectCollisions();
-                MovePlayer();
-                MoveAllBalloons();
+                while (true)
+                {
+                    Console.Clear();
+                    DetectCollisions();
+                    MoveAllBalloons();
+                    Draw();
+                    Thread.Sleep(200);
+                }
+            });
 
-                Thread.Sleep(100);
-                Console.Clear();
-            }
-        }
-        private static void Draw()
-        {
-            DrawPlayer();
-            foreach (var balloon in balloons)
+            while (lives > 0)
             {
-                balloon.Draw();
+                if (Console.KeyAvailable)
+                {
+                    Console.Clear();
+                    DetectCollisions();
+                    MovePlayer();
+                    Draw();
+                }
             }
         }
 
@@ -109,70 +113,58 @@ namespace SuperPang
 
         private static void MovePlayer()
         {
-            if (Console.KeyAvailable)
+            ConsoleKeyInfo pressedKey = Console.ReadKey(false);
+
+            if (pressedKey.Key == ConsoleKey.LeftArrow)
             {
-                ConsoleKeyInfo pressedKey = Console.ReadKey(true);
-                while (Console.KeyAvailable)
+                if (playerPositionX - 1 > 0)
                 {
-                    Console.ReadKey(true);
-                }
-
-                if (pressedKey.Key == ConsoleKey.LeftArrow)
-                {
-                    if (playerPosition - 1 > 0)
-                    {
-                        playerPosition--;
-                    }
-                }
-
-                if (pressedKey.Key == ConsoleKey.RightArrow)
-                {
-                    if (playerPosition + 1 < Console.WindowWidth - 4)
-                    {
-                        playerPosition++;
-                    }
+                    playerPositionX--;
                 }
             }
+            else if (pressedKey.Key == ConsoleKey.RightArrow)
+            {
+                if (playerPositionX + 1 < Console.WindowWidth - 4)
+                {
+                    playerPositionX++;
+                }
+            }
+        }
+
+        private static void Draw()
+        {
+            DrawPlayer();
+            DrawBalloons();
         }
 
         private static void DrawPlayer()
         {
-            playerCoordinates = new List<int>() { 
-                playerPosition, Console.WindowHeight - 1};
+            Console.SetCursorPosition(playerPositionX, playerPositionY);
+            Console.WriteLine(playerHead);
 
-            ConsoleColor playerColor = ConsoleColor.Green;
-
-            DrawSymbolAtCoordinates(playerCoordinates, playerHead, playerColor);
-        }
-
-        private static void DrawSymbolAtCoordinates(List<int> playerCoordinates, string playerSymbol, ConsoleColor playerColor)
-        {
-            //Drawing the player simbols int same position
-            Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
-            Console.WriteLine(playerSymbol);
-
-            Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
+            Console.SetCursorPosition(playerPositionX, playerPositionY + 1);
             Console.WriteLine(playerTorso);
 
-            if (playerPosition % 2 == 0)
-            {
-                Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
-                Console.WriteLine(playerLegs);
-            }
-            else
-            {
-                Console.SetCursorPosition(playerCoordinates[0], playerCoordinates[1]);
-                Console.WriteLine(playerLegsTogether);
-            }
+            Console.SetCursorPosition(playerPositionX, playerPositionY + 2);
+            if (playerPositionX % 2 == 0) Console.WriteLine(playerLegs);
+            else Console.WriteLine(playerLegsTogether);
 
             Console.ForegroundColor = playerColor;
+        }
+
+        private static void DrawBalloons()
+        {
+            foreach (var balloon in balloons)
+            {
+                balloon.Draw();
+            }
         }
 
         private static void DetectCollisions()
         {
             foreach (var balloon in balloons)
             {
-                if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= playerCoordinates[0]) && balloon.CurrentX <= playerCoordinates[0] + 4)
+                if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= playerPositionX) && balloon.CurrentX <= playerPositionX + 4)
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
