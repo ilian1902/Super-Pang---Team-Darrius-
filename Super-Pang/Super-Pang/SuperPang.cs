@@ -50,7 +50,7 @@ namespace SuperPang
                 MovePlayer();
                 MoveAllBalloons();
 
-                Thread.Sleep(200);
+                Thread.Sleep(100);
                 Console.Clear();
             }
         }
