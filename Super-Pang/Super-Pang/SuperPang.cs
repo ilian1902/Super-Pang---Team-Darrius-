@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
@@ -12,6 +10,7 @@ namespace SuperPang
         public const int FirstBallonRadius = 2;
 
         static List<Balloon> balloons = new List<Balloon>();
+        static List<int> playerCoordinates;
 
         static int playerPosition = 0;
         static string playerHead = "(..)";
@@ -24,13 +23,13 @@ namespace SuperPang
         static void Main()
         {
             //Music run
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Music.PlaySound();
-                }
-            });
+            //Task.Run(() =>
+            //{
+            //    while (true)
+            //    {
+            //        Music.PlaySound();
+            //    }
+            //});
 
             //Console title and boundaries
             Console.Title = "Super Pang";
@@ -47,11 +46,20 @@ namespace SuperPang
             while (livesCount > 0)
             {
                 Draw();
+                DetectCollisions();
                 MovePlayer();
                 MoveAllBalloons();
 
                 Thread.Sleep(200);
                 Console.Clear();
+            }
+        }
+        private static void Draw()
+        {
+            DrawPlayer();
+            foreach (var balloon in balloons)
+            {
+                balloon.Draw();
             }
         }
 
@@ -127,18 +135,9 @@ namespace SuperPang
             }
         }
 
-        private static void Draw()
-        {
-            DrawPlayer();
-            foreach (var balloon in balloons)
-            {
-                balloon.Draw();
-            }
-        }
-
         private static void DrawPlayer()
         {
-            List<int> playerCoordinates = new List<int>() { 
+            playerCoordinates = new List<int>() { 
                 playerPosition, Console.WindowHeight - 1};
 
             ConsoleColor playerColor = ConsoleColor.Green;
@@ -167,6 +166,22 @@ namespace SuperPang
             }
 
             Console.ForegroundColor = playerColor;
+        }
+
+        private static void DetectCollisions()
+        {
+            foreach (var balloon in balloons)
+            {
+                // balloon.CurrentY + (balloon.Radius * 2) + 1 >= 18
+                //balloon.CurrentX == playerCoordinates[0] &&
+                if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= playerCoordinates[0]) && balloon.CurrentX <= playerCoordinates[0] + 4)
+                {
+                    if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
+                    {
+                        Environment.Exit(0);
+                    }
+                }
+            }
         }
     }
 }
