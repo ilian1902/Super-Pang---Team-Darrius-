@@ -59,11 +59,48 @@ namespace SuperPang
         {
             foreach (var balloon in balloons)
             {
-                if (balloon.CurrentX >= Console.BufferWidth) balloon.CurrentX--;
-                else balloon.CurrentX++;
+                if (balloon.IsFalling)
+                {
+                    if (balloon.CurrentY + (balloon.Radius * 2) + 1 < Console.BufferHeight) balloon.CurrentY++;
+                    else
+                    {
+                        balloon.CurrentY--;
+                        balloon.IsFalling = false;
+                    }
+                }
+                else
+                {
+                    if (balloon.CurrentY > 0) balloon.CurrentY--;
+                    else
+                    {
+                        balloon.CurrentY++;
+                        balloon.IsFalling = true;
+                    }
+                }
 
-                if (balloon.CurrentY >= Console.BufferHeight) balloon.CurrentY--;
-                else balloon.CurrentY++;
+                if (balloon.IsGoingRight)
+                {
+                    if (balloon.CurrentX + (balloon.Radius * 2) + 1 < Console.BufferWidth) balloon.CurrentX++;
+                    else
+                    {
+                        balloon.CurrentX--;
+                        balloon.IsGoingRight = false;
+                    }
+                }
+                else
+                {
+                    if (balloon.CurrentX > 0) balloon.CurrentX--;
+                    else
+                    {
+                        balloon.CurrentX++;
+                        balloon.IsGoingRight = true;
+                    }
+                }
+                //if (balloon.CurrentX + (balloon.Radius * 2) + 1 >= Console.BufferHeight) balloon.CurrentX--;
+                //else balloon.CurrentX++;
+
+                //if (balloon.CurrentY >= Console.BufferWidth) balloon.CurrentY--;
+                //else balloon.CurrentY++;
             }
         }
 
@@ -100,7 +137,7 @@ namespace SuperPang
             DrawPlayer();
             foreach (var balloon in balloons)
             {
-                //balloon.Draw();
+                balloon.Draw();
             }
         }
 

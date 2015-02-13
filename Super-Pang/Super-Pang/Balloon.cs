@@ -9,6 +9,8 @@
         public Balloon(int radius)
         {
             this.Radius = radius;
+            this.IsFalling = true;
+            this.IsGoingRight = true;
             this.balloon = new char[this.Radius * 2, this.Radius * 2];
             DrawBallInArray();
         }
@@ -18,6 +20,10 @@
         public int CurrentX { get; set; }
 
         public int CurrentY { get; set; }
+
+        public bool IsFalling { get; set; }
+
+        public bool IsGoingRight { get; set; }
 
         private void DrawBallInArray()
         {
@@ -41,8 +47,12 @@
                 {
                     Console.Write(this.balloon[i, j]);
                 }
-
-                Console.WriteLine();
+                
+                if (i != (this.Radius * 2) - 1)
+                {
+                    Console.WriteLine();
+                    Console.SetCursorPosition(this.CurrentX, this.CurrentY + i + 1);
+                }
             }
         }
     }
