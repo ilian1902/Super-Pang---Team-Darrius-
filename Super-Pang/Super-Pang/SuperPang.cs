@@ -19,30 +19,28 @@ namespace SuperPang
         public static int playerPositionX;
         public static int playerPositionY;
         public static int lives;
+        public static int playerScore = 0;
+        public static int timeLeft = 100;
         //static string shotSymbol = "^\n|";
 
         public static void Main()
         {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Music.PlaySound();
-                }
-            });
-
             Console.Title = "Super Pang";
             Console.BufferHeight = Console.WindowHeight = 20;
             Console.BufferWidth = Console.WindowWidth = 60;
 
-            playerPositionX = Console.BufferWidth / 2;
+            playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
 
-            lives = 2;
+            lives = 10;
             var firstBalloon = new Balloon(FirstBallonRadius);
             balloons.Add(firstBalloon);
 
-            Draw();
+            Thread timing = new Thread(new ThreadStart(TimeCounter));
+            Thread music = new Thread(new ThreadStart(Music.PlaySound));
+            timing.Start();
+            music.Start();
+
             Task.Run(() =>
             {
                 while (true)
@@ -60,7 +58,6 @@ namespace SuperPang
                 if (Console.KeyAvailable)
                 {
                     Console.Clear();
-                    DetectCollisions();
                     MovePlayer();
                     Draw();
                 }
@@ -82,7 +79,7 @@ namespace SuperPang
                 }
                 else
                 {
-                    if (balloon.CurrentY > 0) balloon.CurrentY--;
+                    if (balloon.CurrentY > 1) balloon.CurrentY--;
                     else
                     {
                         balloon.CurrentY++;
@@ -135,6 +132,7 @@ namespace SuperPang
         {
             DrawPlayer();
             DrawBalloons();
+            DrawGameInfo();
         }
 
         private static void DrawPlayer()
@@ -160,6 +158,29 @@ namespace SuperPang
             }
         }
 
+        private static void DrawGameInfo()
+        {
+            Console.SetCursorPosition(Console.WindowWidth / 2 - 5, 0);
+            Console.Write("Lives: {0}", lives);
+
+            Console.SetCursorPosition((Console.WindowWidth - Console.WindowWidth) + 1, 0);
+            Console.Write("Score: {0}", playerScore);
+
+            Console.SetCursorPosition(Console.WindowWidth - 10, 0);
+            Console.Write("Time: {0}", timeLeft);
+        }
+
+        private static void TimeCounter()
+        {
+            while (timeLeft > 0)
+            {
+                timeLeft--;
+                Thread.Sleep(1000);
+            }
+
+            lives--;
+        }
+
         private static void DetectCollisions()
         {
             foreach (var balloon in balloons)
@@ -168,7 +189,8 @@ namespace SuperPang
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
-                        Environment.Exit(0);
+                        lives--;
+                        //TODO restart the game.
                     }
                 }
             }
