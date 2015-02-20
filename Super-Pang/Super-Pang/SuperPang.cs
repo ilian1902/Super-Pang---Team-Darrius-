@@ -5,14 +5,15 @@ using System.Threading;
 
 namespace SuperPang
 {
-    class Program
+    class SuperPang
     {
         public static string playerHead = "(..)";
         public static string playerTorso = "<][>";
         public static string playerLegs = " /\\";
         public static string playerLegsTogether = " ||";
-        public const ConsoleColor playerColor = ConsoleColor.Green;
-        
+        public static ConsoleColor playerColor = ConsoleColor.Green;
+        public static ConsoleColor sceneColor = ConsoleColor.Green;
+
         public const int FirstBallonRadius = 2;
         public static List<Balloon> balloons = new List<Balloon>();
 
@@ -22,6 +23,18 @@ namespace SuperPang
         public static int playerScore = 0;
         public static int timeLeft = 100;
         //static string shotSymbol = "^\n|";
+
+        // Generate random numbers for % (how often to run bonus 0-100%)
+        public static Random bonusRandom = new Random();
+        // Generate position of bonus)
+        public static Random bonusXposition = new Random();
+
+        public static int bonusPositionX;
+        public static int bonusCurrentPositionX;
+        public static int bonusCurrentPositionY;
+        public static int bonusPositionY;
+        public static char bonusChar;
+        public static ConsoleColor bonusColor;
 
         public static void Main()
         {
@@ -36,6 +49,9 @@ namespace SuperPang
             var firstBalloon = new Balloon(FirstBallonRadius);
             balloons.Add(firstBalloon);
 
+            //First bonus position
+            bonusPositionY = 1;
+
             Thread timing = new Thread(new ThreadStart(TimeCounter));
             Thread music = new Thread(new ThreadStart(Music.PlaySound));
             timing.Start();
@@ -46,10 +62,13 @@ namespace SuperPang
                 while (true)
                 {
                     Console.Clear();
-                    DetectCollisions();
+                    DetectCollisionsBalloons();
+                    DetectCollisionsBonus();
                     MoveAllBalloons();
                     Draw();
-                    Thread.Sleep(200);
+                    //SetBonus();
+                    DrawBonus();
+                    Thread.Sleep(250);
                 }
             });
 
@@ -60,9 +79,12 @@ namespace SuperPang
                     Console.Clear();
                     MovePlayer();
                     Draw();
+
                 }
             }
         }
+
+
 
         private static void MoveAllBalloons()
         {
@@ -110,20 +132,28 @@ namespace SuperPang
 
         private static void MovePlayer()
         {
-            ConsoleKeyInfo pressedKey = Console.ReadKey(false);
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo pressedKey = Console.ReadKey(true);
 
-            if (pressedKey.Key == ConsoleKey.LeftArrow)
-            {
-                if (playerPositionX - 1 > 0)
+                while (Console.KeyAvailable)
                 {
-                    playerPositionX--;
+                    Console.ReadKey(true);
                 }
-            }
-            else if (pressedKey.Key == ConsoleKey.RightArrow)
-            {
-                if (playerPositionX + 1 < Console.WindowWidth - 4)
+
+                if (pressedKey.Key == ConsoleKey.LeftArrow)
                 {
-                    playerPositionX++;
+                    if (playerPositionX - 1 > 0)
+                    {
+                        playerPositionX--;
+                    }
+                }
+                else if (pressedKey.Key == ConsoleKey.RightArrow)
+                {
+                    if (playerPositionX + 1 < Console.WindowWidth - 4)
+                    {
+                        playerPositionX++;
+                    }
                 }
             }
         }
@@ -137,6 +167,7 @@ namespace SuperPang
 
         private static void DrawPlayer()
         {
+            Console.ForegroundColor = playerColor;
             Console.SetCursorPosition(playerPositionX, playerPositionY);
             Console.WriteLine(playerHead);
 
@@ -147,7 +178,7 @@ namespace SuperPang
             if (playerPositionX % 2 == 0) Console.WriteLine(playerLegs);
             else Console.WriteLine(playerLegsTogether);
 
-            Console.ForegroundColor = playerColor;
+            Console.ForegroundColor = sceneColor;
         }
 
         private static void DrawBalloons()
@@ -181,7 +212,7 @@ namespace SuperPang
             lives--;
         }
 
-        private static void DetectCollisions()
+        private static void DetectCollisionsBalloons()
         {
             foreach (var balloon in balloons)
             {
@@ -193,6 +224,77 @@ namespace SuperPang
                         //TODO restart the game.
                     }
                 }
+            }
+        }
+
+        // Bonuses
+
+        private static void SetBonus()
+        {
+            int bonus = bonusRandom.Next(0, 100);
+            if (bonus <= 3)
+            {
+                bonusChar = '@';
+                bonusColor = ConsoleColor.Red;
+                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else if (bonus > 3 && bonus <= 13)
+            {
+                bonusChar = '$';
+                bonusColor = ConsoleColor.Yellow;
+                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else if (bonus > 13 && bonus <= 50)
+            {
+                bonusChar = '#';
+                bonusColor = ConsoleColor.Magenta;
+                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else
+            {
+                bonusPositionY = Console.BufferHeight;
+            }
+        }
+
+
+        private static void DrawBonus()
+        {
+            if (bonusPositionY == 1 || bonusPositionY >= Console.BufferHeight - 2)
+            {
+                SetBonus();
+            }
+
+            if (bonusPositionY < Console.BufferHeight - 2)
+            {
+                Console.SetCursorPosition(bonusPositionX, bonusPositionY);
+                Console.ForegroundColor = bonusColor;
+                Console.WriteLine(bonusChar);
+                bonusCurrentPositionX = bonusPositionX;
+                bonusCurrentPositionY = bonusPositionY;
+                Console.ForegroundColor = playerColor;
+                bonusPositionY++;
+            }
+        }
+        private static void DetectCollisionsBonus()
+        {
+            if (bonusChar == '#' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
+            {
+                    playerScore+=50;
+            }
+            if (bonusChar == '$' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
+            {
+                playerScore += 100;
+                // strelbata da inishtozhava Big Ballon
+            }
+            if (bonusChar == '@' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
+            {
+                playerScore += 200;
+                lives++;
+                playerColor = ConsoleColor.Red;
+                // strelbata da inishtozhava Big Ballon
             }
         }
     }
