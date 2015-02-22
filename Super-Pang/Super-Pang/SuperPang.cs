@@ -24,11 +24,9 @@ namespace SuperPang
         public static int timeLeft = 100;
         //static string shotSymbol = "^\n|";
 
-        // Generate random numbers for % (how often to run bonus 0-100%)
+        // Generate random numbers for bonus.
         public static Random bonusRandom = new Random();
-        // Generate position of bonus)
-        public static Random bonusXposition = new Random();
-
+       
         public static int bonusPositionX;
         public static int bonusCurrentPositionX;
         public static int bonusCurrentPositionY;
@@ -236,21 +234,21 @@ namespace SuperPang
             {
                 bonusChar = '@';
                 bonusColor = ConsoleColor.Red;
-                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
                 bonusPositionY = 1;
             }
             else if (bonus > 3 && bonus <= 13)
             {
                 bonusChar = '$';
                 bonusColor = ConsoleColor.Yellow;
-                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
                 bonusPositionY = 1;
             }
             else if (bonus > 13 && bonus <= 50)
             {
                 bonusChar = '#';
                 bonusColor = ConsoleColor.Magenta;
-                bonusPositionX = bonusXposition.Next(0, Console.BufferWidth - 1);
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
                 bonusPositionY = 1;
             }
             else
@@ -287,7 +285,8 @@ namespace SuperPang
             if (bonusChar == '$' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
             {
                 playerScore += 100;
-                // strelbata da inishtozhava Big Ballon
+                playerColor = ConsoleColor.Yellow;
+                // strelbata da inishtozhava Big Balloon
             }
             if (bonusChar == '@' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
             {
