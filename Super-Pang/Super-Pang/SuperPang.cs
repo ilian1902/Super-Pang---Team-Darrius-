@@ -40,6 +40,8 @@ namespace SuperPang
             Console.BufferHeight = Console.WindowHeight = 20;
             Console.BufferWidth = Console.WindowWidth = 60;
 
+            Menu();
+
             playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
 
@@ -82,7 +84,61 @@ namespace SuperPang
             }
         }
 
+        static void Menu() 
+        {
+            Console.SetCursorPosition(2, 2);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(" ***  *   * ****  ***** ****    ****    *   *   *  *** ");
+            Console.SetCursorPosition(2, 3);
+            Console.WriteLine("*   * *   * *   * *     *   *   *   *   *   *   * *   *");
+            Console.SetCursorPosition(2, 4);
+            Console.WriteLine("*   * *   * *   * *     *   *   *   *  * *  *   * *   *");
+            Console.SetCursorPosition(2, 5);
+            Console.WriteLine("*     *   * *   * *     *   *   *   *  * *  * * * *    ");
+            Console.SetCursorPosition(2, 6);
+            Console.WriteLine("*     *   * *   * *     *   *   *   * *   * *  ** *    ");
+            Console.SetCursorPosition(2, 7);
+            Console.WriteLine(" ***  *   * ****  ****  ****    ****  ***** *   * *  **");
+            Console.SetCursorPosition(2, 8);
+            Console.WriteLine("    * *   * *     *     * *     *     *   * *   * *   *");
+            Console.SetCursorPosition(2, 9);
+            Console.WriteLine("    * *   * *     *     *  *    *     *   * *   * *   *");
+            Console.SetCursorPosition(2, 10);
+            Console.WriteLine("*   * *   * *     *     *   *   *     *   * *   * *   *");
+            Console.SetCursorPosition(2, 11);
+            Console.WriteLine("*   * *   * *     *     *   *   *     *   * *   * *   *");
+            Console.SetCursorPosition(2, 12);
+            Console.WriteLine(" ***   ***  *     ***** *   *   *     *   * *   *  ***");
+            Console.ResetColor();
+            Console.SetCursorPosition(18, 14);
+            Console.WriteLine("For start enter - start ");
+            Console.SetCursorPosition(19, 16);
+            Console.WriteLine("For exit enter - exit ");
+            Console.SetCursorPosition(29, 18);
+            string command = Console.ReadLine();
 
+            while (true)
+            {
+                if (command == "start")
+                {
+                    Console.Clear();
+                    break;
+                }
+                else if (command == "exit")
+                {
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    Console.SetCursorPosition(20, 18);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid Command!");
+                    Thread.Sleep(1500);
+                    Console.Clear();
+                    Main();
+                }
+            }
+        }
 
         private static void MoveAllBalloons()
         {
@@ -210,6 +266,67 @@ namespace SuperPang
             lives--;
         }
 
+        static void RestartGame()
+        {
+            Console.SetCursorPosition(4, 2);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(" ***    *   *     * *****    ***  *   * ***** **** ");
+            Console.SetCursorPosition(4, 3);
+            Console.WriteLine("*   *   *   **   ** *       *   * *   * *     *   *");
+            Console.SetCursorPosition(4, 4);
+            Console.WriteLine("*   *  * *  * * * * *       *   * *   * *     *   *");
+            Console.SetCursorPosition(4, 5);
+            Console.WriteLine("*      * *  *  *  * *       *   * *   * *     *   *");
+            Console.SetCursorPosition(4, 6);
+            Console.WriteLine("*     *   * *     * *       *   * *   * *     *   *");
+            Console.SetCursorPosition(4, 7);
+            Console.WriteLine("*  ** ***** *     * ****    *   * *   * ****  **** ");
+            Console.SetCursorPosition(4, 8);
+            Console.WriteLine("*   * *   * *     * *       *   * *   * *     * *  ");
+            Console.SetCursorPosition(4, 9);
+            Console.WriteLine("*   * *   * *     * *       *   *  * *  *     *  * ");
+            Console.SetCursorPosition(4, 10);
+            Console.WriteLine("*   * *   * *     * *       *   *  * *  *     *   *");
+            Console.SetCursorPosition(4, 11);
+            Console.WriteLine("*   * *   * *     * *       *   *   *   *     *   *");
+            Console.SetCursorPosition(4, 12);
+            Console.WriteLine(" ***  *   * *     * *****    ***    *   ***** *   *");
+            Console.ResetColor();
+
+            Console.SetCursorPosition(18, 14);
+            Console.WriteLine("Your score is: {0}", playerScore);
+            Console.SetCursorPosition(15, 16);
+            Console.WriteLine("Do you want to play again? y/n");
+            Console.SetCursorPosition(25, 18);
+            string command = Console.ReadLine();
+
+            while (true)
+            {
+                if (command == "y")
+                {
+                    Console.Clear();
+                    break;
+                }
+                else if (command == "n")
+                {
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    Console.SetCursorPosition(20, 15);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid Command!");
+                    Console.Clear();
+                    Thread.Sleep(1500);
+                    RestartGame();
+                }
+            }
+            balloons.Clear();
+            playerScore = 0;
+            timeLeft = 100;
+            Main();
+        }
+
         private static void DetectCollisionsBalloons()
         {
             foreach (var balloon in balloons)
@@ -219,7 +336,10 @@ namespace SuperPang
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
                         lives--;
-                        //TODO restart the game.
+                        if (lives <= 0)
+                        {
+                            RestartGame();
+                        }
                     }
                 }
             }
