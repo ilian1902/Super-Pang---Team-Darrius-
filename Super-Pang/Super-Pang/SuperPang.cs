@@ -14,6 +14,10 @@ namespace SuperPang
         public static ConsoleColor playerColor = ConsoleColor.Green;
         public static ConsoleColor sceneColor = ConsoleColor.Green;
 
+
+        public static Thread timing;
+        public static Thread music;
+
         public const int FirstBallonRadius = 2;
         public static List<Balloon> balloons = new List<Balloon>();
 
@@ -52,8 +56,8 @@ namespace SuperPang
             //First bonus position
             bonusPositionY = 1;
 
-            Thread timing = new Thread(new ThreadStart(TimeCounter));
-            Thread music = new Thread(new ThreadStart(Music.PlaySound));
+            timing = new Thread(new ThreadStart(TimeCounter));
+            music = new Thread(new ThreadStart(Music.PlaySound));
             timing.Start();
             music.Start();
 
@@ -261,9 +265,22 @@ namespace SuperPang
             {
                 timeLeft--;
                 Thread.Sleep(1000);
-            }
 
-            lives--;
+                if (timeLeft <= 0)
+                {
+                    if (lives <= 0)
+                    {
+                        timeLeft = 100;
+                        music.Abort();
+                        RestartGame();
+                    }
+                    else
+                    {
+                        lives--;
+                    }
+                    
+                }
+            }
         }
 
         static void RestartGame()
@@ -338,6 +355,8 @@ namespace SuperPang
                         lives--;
                         if (lives <= 0)
                         {
+                            timeLeft = 100;
+                            music.Abort();
                             RestartGame();
                         }
                     }
