@@ -42,10 +42,6 @@
         internal static void Restart()
         {
             duration = 100;
-            Task.Run(() =>
-                {
-                    Start();
-                });
         }
     }
 }
