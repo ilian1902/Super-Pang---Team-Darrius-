@@ -13,6 +13,8 @@ namespace SuperPang
         public static string playerTorso = "<][>";
         public static string playerLegs = " /\\";
         public static string playerLegsTogether = " ||";
+        public static int playerPositionX;
+        public static int playerPositionY;
         public static ConsoleColor playerColor = ConsoleColor.Green;
         public static ConsoleColor sceneColor = ConsoleColor.Green;
 
@@ -22,22 +24,17 @@ namespace SuperPang
         public const int FirstBallonRadius = 2;
         public static List<Balloon> balloons = new List<Balloon>();
 
-        public static int playerPositionX;
-        public static int playerPositionY;
         public static int lives = 10;
         public static int playerScore = 0;
-        public static int timeLeft = 100;
-        public static int bonusPositionY = 1;
-        //static string shotSymbol = "^\n|";
 
-        // Generate random numbers for bonus.
-        public static Random bonusRandom = new Random();
-
+        public static int bonusPositionY;
         public static int bonusPositionX;
-        public static int bonusCurrentPositionX;
-        public static int bonusCurrentPositionY;
+        public static Random random = new Random();
         public static char bonusChar;
         public static ConsoleColor bonusColor;
+        public static bool hasBonus = false;
+
+        //static string shotSymbol = "^\n|";
 
         public static void Main()
         {
@@ -45,7 +42,7 @@ namespace SuperPang
             Console.BufferHeight = Console.WindowHeight = 20;
             Console.BufferWidth = Console.WindowWidth = 60;
             Menu();
-
+            
             timing = new Thread(new ThreadStart(Timer.Start));
             timing.Start();
 
@@ -66,9 +63,8 @@ namespace SuperPang
                     DetectCollisionsBalloons();
                     DetectCollisionsBonus();
                     MoveAllBalloons();
+                    MoveBonus();
                     Draw();
-                    //SetBonus();
-                    DrawBonus();
                     Thread.Sleep(250);
                 }
             });
@@ -219,11 +215,27 @@ namespace SuperPang
             }
         }
 
+        private static void MoveBonus()
+        {
+            if (hasBonus)
+            {
+                if (bonusPositionY < Console.BufferHeight - 2)
+                {
+                    bonusPositionY++;
+                }
+                else
+                {
+                    hasBonus = false;
+                }
+            }
+        }
+
         private static void Draw()
         {
             DrawPlayer();
             DrawBalloons();
             DrawGameInfo();
+            DrawBonus();
         }
 
         private static void DrawPlayer()
@@ -270,6 +282,16 @@ namespace SuperPang
                     lives--;
                     RestartGame();
                 }
+            }
+        }
+
+        private static void DrawBonus()
+        {
+            if (hasBonus)
+            {
+                Console.SetCursorPosition(bonusPositionX, bonusPositionY);
+                Console.ForegroundColor = bonusColor;
+                Console.WriteLine(bonusChar);
             }
         }
 
@@ -348,11 +370,10 @@ namespace SuperPang
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
-                        EndGame();
                         Thread.Sleep(500);
                         lives--;
                         if (lives <= 0) EndGame();
-                        
+
                         RestartGame();
                         break;
                     }
@@ -371,76 +392,56 @@ namespace SuperPang
             playerPositionY = Console.BufferHeight - 3;
         }
 
-        private static void SetBonus()
+        private static void GenerateBonus()
         {
-            int bonusChance = bonusRandom.Next(0, 101);
+            int bonusChance = random.Next(0, 101);
             if (bonusChance <= 3)
             {
                 bonusChar = '@';
                 bonusColor = ConsoleColor.Red;
-                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-                bonusPositionY = 1;
             }
             else if (bonusChance > 3 && bonusChance <= 13)
             {
                 bonusChar = '$';
                 bonusColor = ConsoleColor.Yellow;
-                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-                bonusPositionY = 1;
             }
             else if (bonusChance > 13 && bonusChance <= 50)
             {
                 bonusChar = '#';
                 bonusColor = ConsoleColor.Magenta;
-                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-                bonusPositionY = 1;
-            }
-            else
-            {
-                bonusPositionY = Console.BufferHeight;
-            }
-        }
-
-        private static void DrawBonus()
-        {
-            if (bonusPositionY == 1 || bonusPositionY >= Console.BufferHeight - 2)
-            {
-                SetBonus();
             }
 
-            if (bonusPositionY < Console.BufferHeight - 2)
-            {
-                Console.SetCursorPosition(bonusPositionX, bonusPositionY);
-                Console.ForegroundColor = bonusColor;
-                Console.WriteLine(bonusChar);
-                bonusCurrentPositionX = bonusPositionX;
-                bonusCurrentPositionY = bonusPositionY;
-                Console.ForegroundColor = playerColor;
-                bonusPositionY++;
-            }
+            bonusPositionX = random.Next(0, Console.BufferWidth - 1);
+            bonusPositionY = 1;
+            hasBonus = true;
+            if (bonusChance > 50) hasBonus = false;
         }
 
         private static void DetectCollisionsBonus()
         {
-            if (bonusCurrentPositionX >= playerPositionX && bonusCurrentPositionX + -3 <= playerPositionX)
+            if (bonusPositionX >= playerPositionX && bonusPositionX + -3 <= playerPositionX)
             {
-                if (bonusCurrentPositionY + 2 >= playerPositionY)
+                if (bonusPositionY + 2 >= playerPositionY)
                 {
-                    switch (bonusChar)
+                    if (hasBonus)
                     {
-                        case '#':
-                            playerScore += 50;
-                            break;
-                        case '$':
-                            playerScore += 100;
-                            break;
-                        case '@':
-                            playerScore += 200;
-                            lives++;
-                            break;
-                    }
+                        switch (bonusChar)
+                        {
+                            case '#':
+                                playerScore += 50;
+                                break;
+                            case '$':
+                                playerScore += 100;
+                                break;
+                            case '@':
+                                playerScore += 200;
+                                lives++;
+                                break;
+                        }
 
-                    playerColor = bonusColor;
+                        playerColor = bonusColor;
+                        hasBonus = false;
+                    }
                 }
             }
         }
