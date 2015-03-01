@@ -64,11 +64,11 @@ namespace SuperPang
                 {
                     Console.Clear();
                     DetectCollisionsBalloons();
-                    //DetectCollisionsBonus();
+                    DetectCollisionsBonus();
                     MoveAllBalloons();
                     Draw();
                     //SetBonus();
-                    //DrawBonus();
+                    DrawBonus();
                     Thread.Sleep(250);
                 }
             });
@@ -324,6 +324,7 @@ namespace SuperPang
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
+                        Thread.Sleep(1000);
                         lives--;
                         if (lives <= 0) EndGame();
 
@@ -344,74 +345,78 @@ namespace SuperPang
             playerPositionY = Console.BufferHeight - 3;
         }
 
-        //private static void SetBonus()
-        //{
-        //    int bonus = bonusRandom.Next(0, 100);
-        //    if (bonus <= 3)
-        //    {
-        //        bonusChar = '@';
-        //        bonusColor = ConsoleColor.Red;
-        //        bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-        //        bonusPositionY = 1;
-        //    }
-        //    else if (bonus > 3 && bonus <= 13)
-        //    {
-        //        bonusChar = '$';
-        //        bonusColor = ConsoleColor.Yellow;
-        //        bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-        //        bonusPositionY = 1;
-        //    }
-        //    else if (bonus > 13 && bonus <= 50)
-        //    {
-        //        bonusChar = '#';
-        //        bonusColor = ConsoleColor.Magenta;
-        //        bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
-        //        bonusPositionY = 1;
-        //    }
-        //    else
-        //    {
-        //        bonusPositionY = Console.BufferHeight;
-        //    }
-        //}
+        private static void SetBonus()
+        {
+            int bonusChance = bonusRandom.Next(0, 101);
+            if (bonusChance <= 3)
+            {
+                bonusChar = '@';
+                bonusColor = ConsoleColor.Red;
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else if (bonusChance > 3 && bonusChance <= 13)
+            {
+                bonusChar = '$';
+                bonusColor = ConsoleColor.Yellow;
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else if (bonusChance > 13 && bonusChance <= 50)
+            {
+                bonusChar = '#';
+                bonusColor = ConsoleColor.Magenta;
+                bonusPositionX = bonusRandom.Next(0, Console.BufferWidth - 1);
+                bonusPositionY = 1;
+            }
+            else
+            {
+                bonusPositionY = Console.BufferHeight;
+            }
+        }
 
-        //private static void DrawBonus()
-        //{
-        //    if (bonusPositionY == 1 || bonusPositionY >= Console.BufferHeight - 2)
-        //    {
-        //        SetBonus();
-        //    }
+        private static void DrawBonus()
+        {
+            if (bonusPositionY == 1 || bonusPositionY >= Console.BufferHeight - 2)
+            {
+                SetBonus();
+            }
 
-        //    if (bonusPositionY < Console.BufferHeight - 2)
-        //    {
-        //        Console.SetCursorPosition(bonusPositionX, bonusPositionY);
-        //        Console.ForegroundColor = bonusColor;
-        //        Console.WriteLine(bonusChar);
-        //        bonusCurrentPositionX = bonusPositionX;
-        //        bonusCurrentPositionY = bonusPositionY;
-        //        Console.ForegroundColor = playerColor;
-        //        bonusPositionY++;
-        //    }
-        //}
+            if (bonusPositionY < Console.BufferHeight - 2)
+            {
+                Console.SetCursorPosition(bonusPositionX, bonusPositionY);
+                Console.ForegroundColor = bonusColor;
+                Console.WriteLine(bonusChar);
+                bonusCurrentPositionX = bonusPositionX;
+                bonusCurrentPositionY = bonusPositionY;
+                Console.ForegroundColor = playerColor;
+                bonusPositionY++;
+            }
+        }
 
-        //private static void DetectCollisionsBonus()
-        //{
-        //    if (bonusChar == '#' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
-        //    {
-        //        playerScore += 50;
-        //    }
-        //    if (bonusChar == '$' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
-        //    {
-        //        playerScore += 100;
-        //        playerColor = ConsoleColor.Yellow;
-        //        // strelbata da inishtozhava Big Balloon
-        //    }
-        //    if (bonusChar == '@' && (bonusCurrentPositionX >= playerPositionX) && (bonusCurrentPositionY == playerPositionY))
-        //    {
-        //        playerScore += 200;
-        //        lives++;
-        //        playerColor = ConsoleColor.Red;
-        //        // strelbata da inishtozhava Big Ballon
-        //    }
-        //}
+        private static void DetectCollisionsBonus()
+        {
+            if (bonusCurrentPositionX >= playerPositionX && bonusCurrentPositionX + -3 <= playerPositionX)
+            {
+                if (bonusCurrentPositionY + 2 >= playerPositionY)
+                {
+                    switch (bonusChar)
+                    {
+                        case '#':
+                            playerScore += 50;
+                            break;
+                        case '$':
+                            playerScore += 100;
+                            break;
+                        case '@':
+                            playerScore += 200;
+                            lives++;
+                            break;
+                    }
+
+                    playerColor = bonusColor;
+                }
+            }
+        }
     }
 }
