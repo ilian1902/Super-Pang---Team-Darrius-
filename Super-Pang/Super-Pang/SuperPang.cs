@@ -9,32 +9,36 @@ namespace SuperPang
     {
         public const int InitialLives = 10;
 
-        public static string playerHead = "(..)";
-        public static string playerTorso = "<][>";
-        public static string playerLegs = " /\\";
-        public static string playerLegsTogether = " ||";
-        public static int playerPositionX;
-        public static int playerPositionY;
-        public static ConsoleColor playerColor = ConsoleColor.Green;
-        public static ConsoleColor sceneColor = ConsoleColor.Green;
+        static string playerHead = "(..)";
+        static string playerTorso = "<][>";
+        static string playerLegs = " /\\";
+        static string playerLegsTogether = " ||";
+        static int playerPositionX;
+        static int playerPositionY;
+        static ConsoleColor playerColor = ConsoleColor.Green;
 
-        public static Thread timing;
-        public static Thread music;
+        static Thread timing;
+        static Thread music;
 
-        public const int FirstBallonRadius = 2;
-        public static List<Balloon> balloons = new List<Balloon>();
+        const int FirstBallonRadius = 2;
+        static List<Balloon> balloons = new List<Balloon>();
 
-        public static int lives = 10;
-        public static int playerScore = 0;
+        static int lives = 5;
+        static int playerScore = 0;
 
-        public static int bonusPositionY;
-        public static int bonusPositionX;
-        public static Random random = new Random();
-        public static char bonusChar;
-        public static ConsoleColor bonusColor;
-        public static bool hasBonus = false;
+        static int bonusPositionY;
+        static int bonusPositionX;
+        static Random random = new Random();
+        static char bonusChar;
+        static ConsoleColor bonusColor;
+        static bool hasBonus = false;
 
-        //static string shotSymbol = "^\n|";
+        static char shotEdge = '^';
+        static char shotSymbol = '|';
+        static int shotPositionX;
+        static int shotPositionY;
+        static ConsoleColor shotColor = ConsoleColor.Cyan;
+        static bool upArrowAvailable = true;
 
         public static void Main()
         {
@@ -60,8 +64,7 @@ namespace SuperPang
                 while (true)
                 {
                     Console.Clear();
-                    DetectCollisionsBalloons();
-                    DetectCollisionsBonus();
+                    Collisions();
                     MoveAllBalloons();
                     MoveBonus();
                     Draw();
@@ -74,12 +77,17 @@ namespace SuperPang
                 if (Console.KeyAvailable)
                 {
                     Console.Clear();
-                    MovePlayer();
-                    DetectCollisionsBalloons();
-                    DetectCollisionsBonus();
+                    PlayerControls();
+                    Collisions();
                     Draw();
                 }
             }
+        }
+
+        static void Collisions()
+        {
+            DetectCollisionsBalloons();
+            DetectCollisionsBonus();
         }
 
         static void Menu()
@@ -187,7 +195,7 @@ namespace SuperPang
             }
         }
 
-        private static void MovePlayer()
+        private static void PlayerControls()
         {
             if (Console.KeyAvailable)
             {
@@ -212,7 +220,38 @@ namespace SuperPang
                         playerPositionX++;
                     }
                 }
+                else if (pressedKey.Key == ConsoleKey.UpArrow && upArrowAvailable)
+                {
+                    shotPositionX = playerPositionX;
+                    shotPositionY = playerPositionY;
+                    Shot();
+                }
             }
+        }
+
+        private static void Shot()
+        {
+            Task.Run(() =>
+            {
+                upArrowAvailable = false;
+                for (int i = 0; i < Console.WindowHeight - 3; i++)
+                {
+
+                    Console.ForegroundColor = shotColor;
+                    Console.SetCursorPosition(shotPositionX, (shotPositionY + 2));
+                    Console.WriteLine(shotEdge);
+
+                    for (int j = 1; j < i; j++)
+                    {
+                        Console.SetCursorPosition(shotPositionX, (shotPositionY + 2) + j);
+                        Console.WriteLine(shotSymbol);
+                    }
+
+                    Thread.Sleep(300);
+                    shotPositionY--;
+                }
+                upArrowAvailable = true;
+            });
         }
 
         private static void MoveBonus()
@@ -250,20 +289,20 @@ namespace SuperPang
             Console.SetCursorPosition(playerPositionX, playerPositionY + 2);
             if (playerPositionX % 2 == 0) Console.WriteLine(playerLegs);
             else Console.WriteLine(playerLegsTogether);
-
-            Console.ForegroundColor = sceneColor;
         }
 
         private static void DrawBalloons()
         {
             foreach (var balloon in balloons)
             {
+                Console.ForegroundColor = ConsoleColor.Gray;
                 balloon.Draw();
             }
         }
 
         private static void DrawGameInfo()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(Console.WindowWidth / 2 - 5, 0);
             Console.Write("Lives: {0}", lives);
 
@@ -376,6 +415,16 @@ namespace SuperPang
 
                         RestartGame();
                         break;
+                    }
+                }
+
+                if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= shotPositionX) || 
+                    balloon.CurrentX <= shotPositionX &&
+                    balloon.CurrentY <= shotPositionY)
+                {
+                    if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
+                    {
+                        GenerateBonus();
                     }
                 }
             }
