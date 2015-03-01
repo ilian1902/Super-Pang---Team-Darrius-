@@ -260,10 +260,22 @@ namespace SuperPang
 
             Console.SetCursorPosition(Console.WindowWidth - 10, 0);
             Console.Write("Time: {0}", Timer.GetRemainingTime());
+
+            if (Timer.GetRemainingTime() <= 0)
+            {
+                if (lives <= 0) EndGame();
+                else
+                {
+                    Thread.Sleep(500);
+                    lives--;
+                    RestartGame();
+                }
+            }
         }
 
         static void EndGame()
         {
+            Console.Clear();
             Console.SetCursorPosition(4, 2);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" ***    *   *     * *****    ***  *   * ***** **** ");
@@ -294,6 +306,7 @@ namespace SuperPang
             Console.SetCursorPosition(15, 16);
             Console.WriteLine("Do you want to play again? y/n");
             Console.SetCursorPosition(25, 18);
+            Console.ForegroundColor = ConsoleColor.Green;
             string command = Console.ReadLine();
 
             while (true)
@@ -309,18 +322,22 @@ namespace SuperPang
                 }
                 else
                 {
-                    Console.SetCursorPosition(20, 15);
+                    Console.SetCursorPosition(20, 18);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid Command!");
-                    Console.Clear();
-                    Thread.Sleep(1500);
-                    EndGame();
+                    Thread.Sleep(1000);
+
+                    Console.SetCursorPosition(20, 18);
+                    Console.WriteLine("                                  ");
+                    Console.SetCursorPosition(25, 18);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    command = Console.ReadLine();
                 }
             }
-            balloons.Clear();
+
+            lives = 10;
             playerScore = 0;
-            timeLeft = 100;
-            Main();
+            RestartGame();
         }
 
         private static void DetectCollisionsBalloons()
@@ -331,11 +348,11 @@ namespace SuperPang
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
+                        EndGame();
                         Thread.Sleep(500);
                         lives--;
                         if (lives <= 0) EndGame();
-
-                        Timer.Restart();
+                        
                         RestartGame();
                         break;
                     }
@@ -345,6 +362,8 @@ namespace SuperPang
 
         private static void RestartGame()
         {
+            Timer.Restart();
+
             balloons.Clear();
             balloons.Add(new Balloon(FirstBallonRadius));
 

@@ -14,24 +14,6 @@
                 duration--;
                 Thread.Sleep(1000);
             }
-            //while (this.Duration > 0)
-            //{
-            //    this.Duration--;
-            //    Thread.Sleep(1000);
-            //    if (this.Duration <= 0)
-            //    {
-            //        if (lives <= 0)
-            //        {
-            //            timeLeft = 100;
-            //            music.Abort();
-            //            RestartGame();
-            //        }
-            //        else
-            //        {
-            //            lives--;
-            //        }
-            //    }
-            //}
         }
 
         internal static int GetRemainingTime()
