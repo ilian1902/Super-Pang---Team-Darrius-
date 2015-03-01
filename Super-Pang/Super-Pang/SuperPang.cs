@@ -79,6 +79,8 @@ namespace SuperPang
                 {
                     Console.Clear();
                     MovePlayer();
+                    DetectCollisionsBalloons();
+                    DetectCollisionsBonus();
                     Draw();
                 }
             }
@@ -115,6 +117,7 @@ namespace SuperPang
             Console.SetCursorPosition(19, 16);
             Console.WriteLine("For exit enter - exit ");
             Console.SetCursorPosition(29, 18);
+            Console.ForegroundColor = ConsoleColor.Green;
             string command = Console.ReadLine();
 
             while (true)
@@ -133,9 +136,13 @@ namespace SuperPang
                     Console.SetCursorPosition(20, 18);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid Command!");
-                    Thread.Sleep(1500);
-                    Console.Clear();
-                    Menu();
+                    Thread.Sleep(1000);
+
+                    Console.SetCursorPosition(20, 18);
+                    Console.WriteLine("                                ");
+                    Console.SetCursorPosition(29, 18);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    command = Console.ReadLine();
                 }
             }
         }
@@ -324,7 +331,7 @@ namespace SuperPang
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         lives--;
                         if (lives <= 0) EndGame();
 
