@@ -72,21 +72,31 @@ namespace SuperPang
             var firstBalloon = new Balloon(FirstBallonRadius);
             balloons.Add(firstBalloon);
 
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+            Stopwatch stopwatchBalloons = new Stopwatch();
+            stopwatchBalloons.Start();
+
+            Stopwatch stopwatchShoot = new Stopwatch();
+            stopwatchShoot.Start();
             while (lives > 0)
             {
-                if(Console.KeyAvailable)
+                if (Console.KeyAvailable)
                 {
                     MovePlayer();
                     moveOccured = true;
                 }
-                
-                if (stopwatch.ElapsedMilliseconds >= 250)
+
+                if (!upArrowAvailable && stopwatchShoot.ElapsedMilliseconds >= 100)
+                {
+                    MoveShot();
+                    stopwatchShoot.Restart();
+                    moveOccured = true;
+                }
+
+                if (stopwatchBalloons.ElapsedMilliseconds >= 250)
                 {
                     MoveAllBalloons();
                     MoveBonus();
-                    stopwatch.Restart();
+                    stopwatchBalloons.Restart();
                     moveOccured = true;
                 }
 
@@ -234,34 +244,48 @@ namespace SuperPang
                 {
                     shotPositionX = playerPositionX + 1;
                     shotPositionY = playerPositionY;
-                    Shot();
+                    upArrowAvailable = false;
                 }
             }
         }
 
-        private static void Shot()
+        private static void MoveShot()
         {
-            Task.Run(() =>
+            if (shotPositionY > 0)
             {
-                upArrowAvailable = false;
-                for (int i = 0; i < Console.WindowHeight - 3; i++)
-                {
-
-                    Console.ForegroundColor = shotColor;
-                    Console.SetCursorPosition(shotPositionX, (shotPositionY + 2));
-                    Console.WriteLine(shotEdge);
-
-                    for (int j = 1; j < i; j++)
-                    {
-                        Console.SetCursorPosition(shotPositionX, (shotPositionY + 2) + j);
-                        Console.WriteLine(shotSymbol);
-                    }
-
-                    Thread.Sleep(300);
-                    shotPositionY--;
-                }
+                shotPositionY--;
+            }
+            else
+            {
                 upArrowAvailable = true;
-            });
+            }
+        }
+
+        private static void Shoоt()
+        {
+            //Task.Run(() =>
+            //{
+            //    upArrowAvailable = false;
+            //    for (int i = 0; i < Console.WindowHeight - 3; i++)
+            //    {
+
+            //        Console.ForegroundColor = shotColor;
+            //        Console.SetCursorPosition(shotPositionX, (shotPositionY + 2));
+            //        Console.WriteLine(shotEdge);
+
+            //        for (int j = 1; j < i; j++)
+            //        {
+            //            Console.SetCursorPosition(shotPositionX, (shotPositionY + 2) + j);
+            //            Console.WriteLine(shotSymbol);
+            //        }
+
+            //        Thread.Sleep(300);
+            //        shotPositionY--;
+            //    }
+            //    upArrowAvailable = true;
+            //});
+
+            upArrowAvailable = false;
         }
 
         private static void MoveBonus()
@@ -288,7 +312,20 @@ namespace SuperPang
             SetBalloons();
             SetGameInfo();
             SetBonus();
+            if (!upArrowAvailable)
+                SetShot();
             DrawPlayGround();
+        }
+
+        private static void SetShot()
+        {
+            var shotCol = shotPositionX;
+            playGround[shotPositionY, shotPositionX] = shotEdge;
+
+            for (int i = shotPositionY + 1; i < playGround.GetLength(0); i++)
+            {
+                playGround[i, shotPositionX] = shotSymbol;
+            }
         }
 
         private static void SetPlayer()
