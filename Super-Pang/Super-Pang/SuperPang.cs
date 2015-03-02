@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Diagnostics;
-using System.Linq;
-
-namespace SuperPang
+﻿namespace SuperPang
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Diagnostics;
+
     class SuperPang
     {
         public static char[,] playGround;
@@ -86,12 +84,12 @@ namespace SuperPang
                     moveOccured = true;
                 }
 
-                //if (!upArrowAvailable && stopwatchShoot.ElapsedMilliseconds >= 100)
-                //{
-                //    MoveShot();
-                //    stopwatchShoot.Restart();
-                //    moveOccured = true;
-                //}
+                if (!upArrowAvailable && stopwatchShoot.ElapsedMilliseconds >= 100)
+                {
+                    MoveShot();
+                    stopwatchShoot.Restart();
+                    moveOccured = true;
+                }
 
                 if (stopwatchBalloons.ElapsedMilliseconds >= 250)
                 {
@@ -262,33 +260,6 @@ namespace SuperPang
             }
         }
 
-        private static void Shoоt()
-        {
-            //Task.Run(() =>
-            //{
-            //    upArrowAvailable = false;
-            //    for (int i = 0; i < Console.WindowHeight - 3; i++)
-            //    {
-
-            //        Console.ForegroundColor = shotColor;
-            //        Console.SetCursorPosition(shotPositionX, (shotPositionY + 2));
-            //        Console.WriteLine(shotEdge);
-
-            //        for (int j = 1; j < i; j++)
-            //        {
-            //            Console.SetCursorPosition(shotPositionX, (shotPositionY + 2) + j);
-            //            Console.WriteLine(shotSymbol);
-            //        }
-
-            //        Thread.Sleep(300);
-            //        shotPositionY--;
-            //    }
-            //    upArrowAvailable = true;
-            //});
-
-            upArrowAvailable = false;
-        }
-
         private static void MoveBonus()
         {
             if (hasBonus)
@@ -331,22 +302,6 @@ namespace SuperPang
 
         private static void SetPlayer()
         {
-            //Console.ForegroundColor = playerColor;
-            //Console.SetCursorPosition(playerPositionX, playerPositionY);
-            //Console.WriteLine(playerHead);
-
-            //Console.SetCursorPosition(playerPositionX, playerPositionY + 1);
-            //Console.WriteLine(playerTorso);
-
-            //Console.SetCursorPosition(playerPositionX, playerPositionY + 2);
-            //if (playerPositionX % 2 == 0) Console.WriteLine(playerLegs);
-            //else Console.WriteLine(playerLegsTogether);
-            //int endTimeBonus = Timer.GetRemainingTime();
-            //if (startTimeBonus - endTimeBonus >= 10)
-            //{
-            //    playerColor = ConsoleColor.Green;
-            //}
-
             for (int i = playerPositionY; i < playerPositionY + playerLegsOpened.GetLength(0); i++)
             {
                 for (int j = playerPositionX; j < playerPositionX + playerLegsOpened.GetLength(1); j++)
@@ -376,23 +331,12 @@ namespace SuperPang
         {
             foreach (var balloon in balloons)
             {
-                //Console.ForegroundColor = ConsoleColor.Gray;
                 balloon.Draw(playGround);
             }
         }
 
         private static void SetGameInfo()
         {
-            //Console.ForegroundColor = ConsoleColor.White;
-            //Console.SetCursorPosition(Console.WindowWidth / 2 - 5, 0);
-            //Console.Write("Lives: {0}", lives);
-
-            //Console.SetCursorPosition((Console.WindowWidth - Console.WindowWidth) + 1, 0);
-            //Console.Write("Score: {0}", playerScore);
-
-            //Console.SetCursorPosition(Console.WindowWidth - 10, 0);
-            //Console.Write("Time: {0}", Timer.GetRemainingTime());
-
             playGround[0, Console.WindowWidth / 2 - 5] = 'L';
             playGround[0, Console.WindowWidth / 2 - 4] = 'i';
             playGround[0, Console.WindowWidth / 2 - 3] = 'v';
@@ -439,10 +383,6 @@ namespace SuperPang
         {
             if (hasBonus)
             {
-                //Console.SetCursorPosition(bonusPositionX, bonusPositionY);
-                //Console.ForegroundColor = bonusColor;
-                //Console.WriteLine(bonusChar);
-
                 playGround[bonusPositionY, bonusPositionX] = bonusChar;
             }
         }
@@ -553,6 +493,14 @@ namespace SuperPang
                 //balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY - 1, true, false));
                 //balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY + 1, true, true));
             }
+
+            if (balloons.Count == 0) WinGame();
+        }
+
+        private static void WinGame()
+        {
+            Console.Clear();
+            Console.WriteLine("YOU WIN");
         }
 
         private static void RestartGame()

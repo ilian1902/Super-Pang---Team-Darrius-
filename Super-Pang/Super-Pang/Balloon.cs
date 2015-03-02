@@ -50,21 +50,6 @@
 
         public void Draw(char[,] playGround)
         {
-            //Console.SetCursorPosition(this.CurrentX, this.CurrentY);
-            //for (int i = 0; i < this.balloon.GetLength(0); i++)
-            //{
-            //    for (int j = 0; j < this.balloon.GetLength(1); j++)
-            //    {
-            //        Console.Write(this.balloon[i, j]);
-            //    }
-                
-            //    if (i != (this.Radius * 2) - 1)
-            //    {
-            //        Console.WriteLine();
-            //        Console.SetCursorPosition(this.CurrentX, this.CurrentY + i + 1);
-            //    }
-            //}
-
             for (int i = this.CurrentY; i < this.CurrentY + this.balloon.GetLength(0); i++)
             {
                 for (int j = this.CurrentX; j < this.CurrentX + this.balloon.GetLength(1); j++)
