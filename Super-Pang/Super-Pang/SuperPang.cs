@@ -530,16 +530,21 @@ namespace SuperPang
                     }
                 }
 
-                //if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= shotPositionX) ||
-                //    balloon.CurrentX <= shotPositionX &&
-                //    balloon.CurrentY <= shotPositionY)
-                //{
-                //    if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
-                //    {
-                //        GenerateBonus();
-                //    }
-                //}
+                if (balloon.CurrentX <= shotPositionX && balloon.CurrentX + (balloon.Radius * 2) >= shotPositionX)
+                {
+                    if (shotPositionY < balloon.CurrentY + (balloon.Radius * 2))
+                    {
+                        Environment.Exit(0);
+                        BreakBalloon();
+                    }
+                    
+                }
             }
+        }
+
+        private static void BreakBalloon()
+        {
+
         }
 
         private static void RestartGame()
