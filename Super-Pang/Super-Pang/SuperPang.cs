@@ -31,6 +31,7 @@ namespace SuperPang
         static Random random = new Random();
         static char bonusChar;
         static ConsoleColor bonusColor;
+        static int startTimeBonus;
         static bool hasBonus = false;
 
         static char shotEdge = '^';
@@ -289,6 +290,11 @@ namespace SuperPang
             Console.SetCursorPosition(playerPositionX, playerPositionY + 2);
             if (playerPositionX % 2 == 0) Console.WriteLine(playerLegs);
             else Console.WriteLine(playerLegsTogether);
+            int endTimeBonus = Timer.GetRemainingTime();
+            if (startTimeBonus - endTimeBonus >= 10)
+            {
+                playerColor = ConsoleColor.Green;
+            }
         }
 
         private static void DrawBalloons()
@@ -405,7 +411,7 @@ namespace SuperPang
         {
             foreach (var balloon in balloons)
             {
-                if ((balloon.CurrentX + (balloon.Radius * 2) + 1 >= playerPositionX) && balloon.CurrentX <= playerPositionX + 4)
+                if (((balloon.CurrentX + (balloon.Radius * 2) + 1) >= playerPositionX) && (balloon.CurrentX <= playerPositionX + 4) && (playerColor != ConsoleColor.Red))
                 {
                     if (balloon.CurrentY + (balloon.Radius * 2) >= 16)
                     {
@@ -482,11 +488,13 @@ namespace SuperPang
                             case '$':
                                 playerScore += 100;
                                 playerColor = bonusColor;
+                                startTimeBonus = Timer.GetRemainingTime();
                                 break;
                             case '@':
                                 playerScore += 200;
                                 lives++;
                                 playerColor = bonusColor;
+                                startTimeBonus = Timer.GetRemainingTime();
                                 break;
                         }
                         hasBonus = false;
