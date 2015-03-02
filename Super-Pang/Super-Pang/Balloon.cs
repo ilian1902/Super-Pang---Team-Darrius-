@@ -6,11 +6,13 @@
     {
         private char[,] balloon;
 
-        public Balloon(int radius)
+        public Balloon(int radius, int x, int y, bool isFalling, bool isGoingRight)
         {
             this.Radius = radius;
-            this.IsFalling = true;
-            this.IsGoingRight = true;
+            this.IsFalling = isFalling;
+            this.IsGoingRight = isGoingRight;
+            this.CurrentX = x;
+            this.CurrentY = y;
             this.balloon = new char[this.Radius * 2, this.Radius * 2];
             DrawBallInArray();
         }

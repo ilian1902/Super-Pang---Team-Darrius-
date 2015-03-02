@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SuperPang
 {
@@ -69,7 +70,7 @@ namespace SuperPang
             playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
 
-            var firstBalloon = new Balloon(FirstBallonRadius);
+            var firstBalloon = new Balloon(FirstBallonRadius, 0, 0, true, true);
             balloons.Add(firstBalloon);
 
             Stopwatch stopwatchBalloons = new Stopwatch();
@@ -85,12 +86,12 @@ namespace SuperPang
                     moveOccured = true;
                 }
 
-                if (!upArrowAvailable && stopwatchShoot.ElapsedMilliseconds >= 100)
-                {
-                    MoveShot();
-                    stopwatchShoot.Restart();
-                    moveOccured = true;
-                }
+                //if (!upArrowAvailable && stopwatchShoot.ElapsedMilliseconds >= 100)
+                //{
+                //    MoveShot();
+                //    stopwatchShoot.Restart();
+                //    moveOccured = true;
+                //}
 
                 if (stopwatchBalloons.ElapsedMilliseconds >= 250)
                 {
@@ -534,17 +535,24 @@ namespace SuperPang
                 {
                     if (shotPositionY < balloon.CurrentY + (balloon.Radius * 2))
                     {
-                        Environment.Exit(0);
-                        BreakBalloon();
+                        GenerateBonus();
+                        BreakBalloon(balloon);
+                        break;
                     }
                     
                 }
             }
         }
 
-        private static void BreakBalloon()
+        private static void BreakBalloon(Balloon currentBalloon)
         {
+            balloons.Remove(currentBalloon);
 
+            if (currentBalloon.Radius >= 2)
+            {
+                //balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY - 1, true, false));
+                //balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY + 1, true, true));
+            }
         }
 
         private static void RestartGame()
@@ -552,7 +560,7 @@ namespace SuperPang
             Timer.Restart();
 
             balloons.Clear();
-            balloons.Add(new Balloon(FirstBallonRadius));
+            balloons.Add(new Balloon(FirstBallonRadius, 0, 0, true, true));
 
             playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
