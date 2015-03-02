@@ -481,14 +481,14 @@ namespace SuperPang
                                 break;
                             case '$':
                                 playerScore += 100;
+                                playerColor = bonusColor;
                                 break;
                             case '@':
                                 playerScore += 200;
                                 lives++;
+                                playerColor = bonusColor;
                                 break;
                         }
-
-                        playerColor = bonusColor;
                         hasBonus = false;
                     }
                 }
