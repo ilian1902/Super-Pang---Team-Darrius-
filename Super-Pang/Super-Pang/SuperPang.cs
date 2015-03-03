@@ -34,7 +34,7 @@
 
         static List<Balloon> balloons = new List<Balloon>();
 
-        static int lives = 1;
+        static int lives = 2;
         static int playerScore = 0;
         static string playerName = string.Empty;
 
@@ -547,7 +547,7 @@
                 }
             }
 
-            lives = 10;
+            lives = 2;
             playerScore = 0;
             RestartGame();
         }
@@ -604,31 +604,25 @@
         {
             using (StreamReader reader = new StreamReader(@"..\..\HighScores.txt"))
             {
-                string line = reader.ReadLine();
-                while (line != null && line != string.Empty)
+
+                for (int i = 0; i < 5; i++)
                 {
-                    if (highScores.Count > 5)
-                    {
-                        break;
-                    }
+                    string line = reader.ReadLine();
+
                     string[] splitedLine = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     highScores.Add(int.Parse(splitedLine[0]), splitedLine[1]);
-                    line = reader.ReadLine();
                 }
+                
             }
 
             highScores.Add(playerScore, playerName);
+
             using (StreamWriter writer = new StreamWriter(@"..\..\HighScores.txt"))
             {
-
                 foreach (var x in highScores.Reverse())
                 {
                     writer.WriteLine("{0} {1}", x.Key, x.Value);
                 }
-                //for (int i = highScores.Count - 1; i >= 0; i--)
-                //{
-                //    writer.WriteLine(highScores.Keys[i] + " " + highScores.Values[i]);
-                //}
             }
         }
 
@@ -636,11 +630,12 @@
         {
             Console.SetCursorPosition(18, 13);
             Console.WriteLine("High Scores: ");
+
             int i = 0;
             foreach (var x in highScores.Reverse())
             {
                 Console.SetCursorPosition(18, 13 + i);
-                Console.WriteLine("{0} -> {1}", x.Value, x.Key);
+                Console.WriteLine("{0} -> {1}", x.Key, x.Value);
                 i++;
             }
 
@@ -660,6 +655,7 @@
 
             playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
+            highScores.Clear();
         }
 
         private static void GenerateBonus()
