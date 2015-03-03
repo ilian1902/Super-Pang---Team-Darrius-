@@ -1,3 +1,4 @@
+850 Peter
 700 asdaijfaiufs
 305 Ivan
 300 Hristo
@@ -6,3 +7,4 @@
 200 asdasdasda
 180 Hristo
 100 asd
+0 Petar

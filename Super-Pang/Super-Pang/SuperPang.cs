@@ -47,7 +47,7 @@
         static bool moveOccured = false;
 
         static char shotEdge = '^';
-        static char shotSymbol = '|';
+        static char shotSymbol = 'I';
         static int shotPositionX;
         static int shotPositionY;
         static ConsoleColor shotColor = ConsoleColor.Cyan;
@@ -323,6 +323,99 @@
             {
                 for (int j = 0; j < playGround.GetLength(1); j++)
                 {
+
+                    switch (playGround[i, j])
+                    {
+                        //player
+                        case '(':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '.':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case ')':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '<':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '[':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case ']':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '>':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '/':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '\\':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        case '|':
+                            Console.ForegroundColor = playerColor;
+                            break;
+                        //shooting
+                        case '^':
+                            Console.ForegroundColor = shotColor;
+                            break;
+                        case 'I':
+                            Console.ForegroundColor = shotColor;
+                            break;
+                        //balloon
+                        case '*':
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            break;
+                        //Game info
+                        case 's':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'c':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'o':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'r':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'e':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'L':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'i':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'v':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 't':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        case 'm':
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        //Bonuses
+                        case '@':
+                            bonusColor = ConsoleColor.Red;
+                            Console.ForegroundColor = bonusColor;
+                            break;
+                        case '#':
+                            bonusColor = ConsoleColor.Magenta;
+                            Console.ForegroundColor = bonusColor;
+                            break;
+                        case '$':
+                            bonusColor = ConsoleColor.Yellow;
+                            Console.ForegroundColor = bonusColor;
+                            break;
+                        default:
+                            break;
+                    }
+
                     if (playGround[i, j] == '\0')
                         playGround[i, j] = ' ';
                     Console.Write(playGround[i, j]);
@@ -558,17 +651,14 @@
             if (bonusChance <= 3)
             {
                 bonusChar = '@';
-                bonusColor = ConsoleColor.Red;
             }
             else if (bonusChance > 3 && bonusChance <= 13)
             {
                 bonusChar = '$';
-                bonusColor = ConsoleColor.Yellow;
             }
             else if (bonusChance > 13 && bonusChance <= 50)
             {
                 bonusChar = '#';
-                bonusColor = ConsoleColor.Magenta;
             }
 
             bonusPositionX = random.Next(0, Console.BufferWidth - 1);
