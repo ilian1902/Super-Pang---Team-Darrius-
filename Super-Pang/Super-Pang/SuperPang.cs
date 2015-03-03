@@ -498,7 +498,7 @@
                 balloons.Add(new Balloon(currentBalloon.Radius - 1, currentBalloon.CurrentX, currentBalloon.CurrentY, true, true));
             }
 
-            if (balloons.Count == 0) WinGame();
+            if (balloons.Count == 0) EndGame();
         }
 
         private static void DrawHighscores()
@@ -529,22 +529,6 @@
                 }
             }
         
-        }
-
-        private static void WinGame()
-        {
-            Console.Clear();
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 8, Console.WindowHeight / 2);
-            Console.WriteLine("YOU WIN");
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 8, Console.WindowHeight / 2 + 1);
-            Console.WriteLine("Your score is: {0}", playerScore);
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 8, Console.WindowHeight / 2 + 2);
-            Console.WriteLine("Enter your name: ");
-            Console.SetCursorPosition(Console.WindowWidth / 2 - 8, Console.WindowHeight / 2 + 3);
-            string playerName = Console.ReadLine();
-            RestartGame();
-            Console.Clear();
-            Menu();
         }
 
         private static void RestartGame()
