@@ -28,7 +28,7 @@
         static Thread timing;
         static Thread music;
 
-        const int FirstBallonRadius = 2;
+        const int FirstBallonRadius = 3;
         static List<Balloon> balloons = new List<Balloon>();
 
         static int lives = 10;
@@ -470,16 +470,20 @@
                     }
                 }
 
-                if (balloon.CurrentX <= shotPositionX && balloon.CurrentX + (balloon.Radius * 2) >= shotPositionX)
+                if (!upArrowAvailable)
                 {
-                    if (shotPositionY < balloon.CurrentY + (balloon.Radius * 2))
+                    if (balloon.CurrentX <= shotPositionX && balloon.CurrentX + (balloon.Radius * 2) >= shotPositionX)
                     {
-                        playerScore += 100;
-                        GenerateBonus();
-                        BreakBalloon(balloon);
-                        break;
+                        if (shotPositionY < balloon.CurrentY + (balloon.Radius * 2))
+                        {
+                            playerScore += 100;
+                            GenerateBonus();
+                            BreakBalloon(balloon);
+                            upArrowAvailable = true;
+                            break;
+                        }
+
                     }
-                    
                 }
             }
         }
@@ -490,8 +494,8 @@
 
             if (currentBalloon.Radius >= 2)
             {
-                balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY - 1, true, false));
-                balloons.Add(new Balloon(currentBalloon.Radius / 2, currentBalloon.CurrentX, currentBalloon.CurrentY + 1, true, true));
+                balloons.Add(new Balloon(currentBalloon.Radius - 1, currentBalloon.CurrentX, currentBalloon.CurrentY, true, false));
+                balloons.Add(new Balloon(currentBalloon.Radius - 1, currentBalloon.CurrentX, currentBalloon.CurrentY, true, true));
             }
 
             if (balloons.Count == 0) WinGame();

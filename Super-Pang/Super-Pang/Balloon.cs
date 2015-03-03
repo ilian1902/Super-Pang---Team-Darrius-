@@ -31,8 +31,6 @@
 
         private void DrawBallInArray()
         {
-            // TODO: Implement logic
-
             for (int row = 0; row < balloon.GetLength(0); row++)
             {
                 for (int col = 0; col < balloon.GetLength(1); col++)
@@ -42,37 +40,19 @@
                         if ((row == 0 || row == balloon.GetLength(0) - 1) &&
                             (col == 0 || col == balloon.GetLength(0) - 1))
                         {
-                            Console.Write(balloon[row, col] = emptySymbols);
+                            balloon[row, col] = emptySymbols;
                         }
                         else
                         {
-                            Console.Write(balloon[row, col] = balloonSymbols);
+                            balloon[row, col] = balloonSymbols;
                         }
                     }
                     else
                     {
-                        Console.Write(balloon[row, col] = balloonSymbols);
+                        balloon[row, col] = balloonSymbols;
                     }
                 }
-                Console.WriteLine();
             }
-
-            //this.balloon[0, 0] = ' ';
-            //this.balloon[0, 1] = '*';
-            //this.balloon[0, 2] = '*';
-            //this.balloon[0, 3] = ' ';
-            //this.balloon[1, 0] = '*';
-            //this.balloon[1, 1] = ' ';
-            //this.balloon[1, 2] = ' ';
-            //this.balloon[1, 3] = '*';
-            //this.balloon[2, 0] = '*';
-            //this.balloon[2, 1] = ' ';
-            //this.balloon[2, 2] = ' ';
-            //this.balloon[2, 3] = '*';
-            //this.balloon[3, 0] = ' ';
-            //this.balloon[3, 1] = '*';
-            //this.balloon[3, 2] = '*';
-            //this.balloon[3, 3] = ' ';
         }
 
         public void Draw(char[,] playGround)
