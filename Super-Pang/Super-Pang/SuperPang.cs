@@ -638,6 +638,7 @@
                 Console.WriteLine("{0} -> {1}", x.Key, x.Value);
                 i++;
             }
+            highScores.Clear();
 
             //for (int i = highScores.Count - 1; i >= highScores.Count - count; i--)
             //{
