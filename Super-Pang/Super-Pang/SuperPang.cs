@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
 
     class SuperPang
     {
@@ -53,7 +54,7 @@
         static ConsoleColor shotColor = ConsoleColor.Cyan;
         static bool upArrowAvailable = true;
 
-        static SortedList<int, string> highScores = new SortedList<int, string>();
+        static SortedDictionary<int, string> highScores = new SortedDictionary<int, string>();
 
         public static void Main()
         {
@@ -606,6 +607,10 @@
                 string line = reader.ReadLine();
                 while (line != null && line != string.Empty)
                 {
+                    if (highScores.Count > 5)
+                    {
+                        break;
+                    }
                     string[] splitedLine = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     highScores.Add(int.Parse(splitedLine[0]), splitedLine[1]);
                     line = reader.ReadLine();
@@ -615,10 +620,15 @@
             highScores.Add(playerScore, playerName);
             using (StreamWriter writer = new StreamWriter(@"..\..\HighScores.txt"))
             {
-                for (int i = highScores.Count - 1; i >= 0; i--)
+
+                foreach (var x in highScores.Reverse())
                 {
-                    writer.WriteLine(highScores.Keys[i] + " " + highScores.Values[i]);
+                    writer.WriteLine("{0} {1}", x.Key, x.Value);
                 }
+                //for (int i = highScores.Count - 1; i >= 0; i--)
+                //{
+                //    writer.WriteLine(highScores.Keys[i] + " " + highScores.Values[i]);
+                //}
             }
         }
 
@@ -626,12 +636,19 @@
         {
             Console.SetCursorPosition(18, 13);
             Console.WriteLine("High Scores: ");
-
-            for (int i = highScores.Count - 1; i >= highScores.Count - count; i--)
+            int i = 0;
+            foreach (var x in highScores.Reverse())
             {
                 Console.SetCursorPosition(18, 13 + i);
-                Console.WriteLine("{0} -> {1}", highScores.Values[i], highScores.Keys[i]);
+                Console.WriteLine("{0} -> {1}", x.Value, x.Key);
+                i++;
             }
+
+            //for (int i = highScores.Count - 1; i >= highScores.Count - count; i--)
+            //{
+            //    Console.SetCursorPosition(18, 13 + i);
+            //   Console.WriteLine("{0} -> {1}", highScores.Values[i], highScores.Keys[i]);
+            //}
         }
 
         private static void RestartGame()
