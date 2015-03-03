@@ -66,11 +66,7 @@
             playGround = new char[Console.WindowHeight, Console.WindowWidth];
             Menu();
 
-            timing = new Thread(new ThreadStart(Timer.Start));
-            timing.Start();
-
-            music = new Thread(new ThreadStart(Music.PlaySound));
-            music.Start();
+            MusicGame();
 
             playerPositionX = Console.BufferWidth / 2 - 3;
             playerPositionY = Console.BufferHeight - 3;
@@ -85,7 +81,7 @@
             stopwatchShoot.Start();
             while (lives > 0)
             {
-                if (Console.KeyAvailable)
+                while (Console.KeyAvailable)
                 {
                     MovePlayer();
                     moveOccured = true;
@@ -113,6 +109,15 @@
                     moveOccured = false;
                 }
             }
+        }
+
+        static void MusicGame()
+        {
+            timing = new Thread(new ThreadStart(Timer.Start));
+            timing.Start();
+
+            music = new Thread(new ThreadStart(Music.PlaySound));
+            music.Start();
         }
 
         static void Collisions()
@@ -228,7 +233,7 @@
 
         private static void MovePlayer()
         {
-            if (Console.KeyAvailable)
+            while (Console.KeyAvailable)
             {
                 ConsoleKeyInfo pressedKey = Console.ReadKey(true);
 
