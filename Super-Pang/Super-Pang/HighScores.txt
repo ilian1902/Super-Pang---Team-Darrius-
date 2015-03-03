@@ -1,0 +1,5 @@
+﻿300 Ivan
+225 Kaloian
+220 Petar
+180 Hristo
+150 Petia 

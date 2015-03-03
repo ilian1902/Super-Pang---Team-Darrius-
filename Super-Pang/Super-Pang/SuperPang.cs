@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Diagnostics;
+    using System.IO;
 
     class SuperPang
     {
@@ -32,6 +33,7 @@
 
         static int lives = 10;
         static int playerScore = 0;
+        static string playerName = string.Empty;
 
         static int bonusPositionY;
         static int bonusPositionX;
@@ -400,26 +402,23 @@
             Console.SetCursorPosition(4, 5);
             Console.WriteLine("*      * *  *  *  * *       *   * *   * *     *   *");
             Console.SetCursorPosition(4, 6);
-            Console.WriteLine("*     *   * *     * *       *   * *   * *     *   *");
-            Console.SetCursorPosition(4, 7);
             Console.WriteLine("*  ** ***** *     * ****    *   * *   * ****  **** ");
-            Console.SetCursorPosition(4, 8);
+            Console.SetCursorPosition(4, 7);
             Console.WriteLine("*   * *   * *     * *       *   * *   * *     * *  ");
-            Console.SetCursorPosition(4, 9);
+            Console.SetCursorPosition(4, 8);
             Console.WriteLine("*   * *   * *     * *       *   *  * *  *     *  * ");
-            Console.SetCursorPosition(4, 10);
-            Console.WriteLine("*   * *   * *     * *       *   *  * *  *     *   *");
-            Console.SetCursorPosition(4, 11);
+            Console.SetCursorPosition(4, 9);
             Console.WriteLine("*   * *   * *     * *       *   *   *   *     *   *");
-            Console.SetCursorPosition(4, 12);
+            Console.SetCursorPosition(4, 10);
             Console.WriteLine(" ***  *   * *     * *****    ***    *   ***** *   *");
             Console.ResetColor();
 
-            Console.SetCursorPosition(18, 14);
-            Console.WriteLine("Your score is: {0}", playerScore);
-            Console.SetCursorPosition(15, 16);
-            Console.WriteLine("Do you want to play again? y/n");
-            Console.SetCursorPosition(25, 18);
+            Console.SetCursorPosition(18, 12);
+            Console.Write("Enter your name: ");
+            playerName = Console.ReadLine();
+            Console.SetCursorPosition(18, 13);
+            Console.SetCursorPosition(15, 18);
+            Console.Write("Do you want to play again? y/n: ");
             Console.ForegroundColor = ConsoleColor.Green;
             string command = Console.ReadLine();
 
@@ -497,10 +496,43 @@
             if (balloons.Count == 0) WinGame();
         }
 
+        private static void DrawHighscores()
+        {
+            StreamReader reader = new StreamReader(@"..\..\HighScores.txt");
+
+            using (reader)
+            {
+                SortedList<int, string> highScores = new SortedList<int, string>();
+
+                for (int i = 0; i < 5; i++)
+                {
+                    string line = reader.ReadLine();
+                    string[] splitedLine = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    highScores.Add(int.Parse(splitedLine[1]), splitedLine[0]);
+                }
+
+                highScores.Add(playerScore, playerName);
+
+                highScores.RemoveAt(0);
+
+                Console.WriteLine("High Scores: ");
+
+                // Reverse for loop (forr + tab)
+                for (int i = highScores.Count - 1; i >= 0; --i)
+                {
+                    Console.WriteLine("{0} -> {1}",highScores.Values[i],  highScores.Keys[i]);
+                }
+            }
+        
+        }
+
         private static void WinGame()
         {
             Console.Clear();
             Console.WriteLine("YOU WIN");
+            Console.WriteLine("Your score is: {0}", playerScore);
+            Console.WriteLine("Enter your name: ");
+            string playerName = Console.ReadLine();
         }
 
         private static void RestartGame()
