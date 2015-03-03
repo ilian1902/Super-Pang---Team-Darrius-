@@ -8,6 +8,9 @@
 
     class SuperPang
     {
+        const int FirstBallonRadius = 3;
+        const int HighScoresToDraw = 5;
+
         public static char[,] playGround;
         public static char[,] playerLegsOpened = new char[3, 4] 
         {
@@ -28,10 +31,9 @@
         static Thread timing;
         static Thread music;
 
-        const int FirstBallonRadius = 3;
         static List<Balloon> balloons = new List<Balloon>();
 
-        static int lives = 10;
+        static int lives = 1;
         static int playerScore = 0;
         static string playerName = string.Empty;
 
@@ -50,6 +52,8 @@
         static int shotPositionY;
         static ConsoleColor shotColor = ConsoleColor.Cyan;
         static bool upArrowAvailable = true;
+
+        static SortedList<int, string> highScores = new SortedList<int, string>();
 
         public static void Main()
         {
@@ -416,8 +420,9 @@
             Console.SetCursorPosition(18, 12);
             Console.Write("Enter your name: ");
             playerName = Console.ReadLine();
-            Console.SetCursorPosition(18, 13);
-            Console.SetCursorPosition(15, 18);
+            UpdateHighScores();
+            DrawHighScores(HighScoresToDraw);
+            Console.SetCursorPosition(15, 14 + HighScoresToDraw);
             Console.Write("Do you want to play again? y/n: ");
             Console.ForegroundColor = ConsoleColor.Green;
             string command = Console.ReadLine();
@@ -501,34 +506,39 @@
             if (balloons.Count == 0) EndGame();
         }
 
-        private static void DrawHighscores()
+        private static void UpdateHighScores()
         {
-            StreamReader reader = new StreamReader(@"..\..\HighScores.txt");
-
-            using (reader)
+            using (StreamReader reader = new StreamReader(@"..\..\HighScores.txt"))
             {
-                SortedList<int, string> highScores = new SortedList<int, string>();
-
-                for (int i = 0; i < 5; i++)
+                string line = reader.ReadLine();
+                while (line != null && line != string.Empty)
                 {
-                    string line = reader.ReadLine();
                     string[] splitedLine = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    highScores.Add(int.Parse(splitedLine[1]), splitedLine[0]);
-                }
-
-                highScores.Add(playerScore, playerName);
-
-                highScores.RemoveAt(0);
-
-                Console.WriteLine("High Scores: ");
-
-                // Reverse for loop (forr + tab)
-                for (int i = highScores.Count - 1; i >= 0; --i)
-                {
-                    Console.WriteLine("{0} -> {1}",highScores.Values[i],  highScores.Keys[i]);
+                    highScores.Add(int.Parse(splitedLine[0]), splitedLine[1]);
+                    line = reader.ReadLine();
                 }
             }
-        
+
+            highScores.Add(playerScore, playerName);
+            using (StreamWriter writer = new StreamWriter(@"..\..\HighScores.txt"))
+            {
+                for (int i = highScores.Count - 1; i >= 0; i--)
+                {
+                    writer.WriteLine(highScores.Keys[i] + " " + highScores.Values[i]);
+                }
+            }
+        }
+
+        private static void DrawHighScores(int count)
+        {
+            Console.SetCursorPosition(18, 13);
+            Console.WriteLine("High Scores: ");
+
+            for (int i = highScores.Count - 1; i >= highScores.Count - count; i--)
+            {
+                Console.SetCursorPosition(18, 13 + i);
+                Console.WriteLine("{0} -> {1}", highScores.Values[i], highScores.Keys[i]);
+            }
         }
 
         private static void RestartGame()

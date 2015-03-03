@@ -1,5 +1,8 @@
-﻿300 Ivan
+700 asdaijfaiufs
+305 Ivan
+300 Hristo
 225 Kaloian
 220 Petar
+200 asdasdasda
 180 Hristo
-150 Petia 
+100 asd
